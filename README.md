@@ -1,5 +1,5 @@
 # UserDefaultsWrapper
-[![SwiftPM](https://github.com/nearfri/UserDefaultsWrapper/workflows/SwiftPM/badge.svg)](https://github.com/nearfri/UserDefaultsWrapper/actions?query=workflow%3ASwiftPM)
+[![Swift](https://github.com/nearfri/UserDefaultsWrapper/actions/workflows/swift.yml/badge.svg)](https://github.com/nearfri/UserDefaultsWrapper/actions/workflows/swift.yml)
 
 A Swift library that makes it easy to use UserDefaults.
 

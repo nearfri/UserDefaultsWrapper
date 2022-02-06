@@ -45,7 +45,7 @@ final class JSONValueCoderTests: XCTestCase {
         line: UInt = #line
     ) where T: Codable, T: Equatable {
         let defaults = UserDefaults.standard
-        let key = "anonymousKey"
+        let key = "anonymousKey-\(type(of: self))"
         defer { defaults.removeObject(forKey: key) }
         
         let encodedValue: Any

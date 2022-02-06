@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import UserDefaultsWrapper
+import UserDefaultsWrapperPlus
 
 protocol Settings: AnyObject {
     var greeting: String { get set }

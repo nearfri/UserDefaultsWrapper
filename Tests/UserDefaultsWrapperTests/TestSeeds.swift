@@ -1,4 +1,5 @@
 import Foundation
+import CoreGraphics
 import UserDefaultsWrapper
 
 enum ColorType: String, Codable {

@@ -1,16 +1,8 @@
 import XCTest
-import UserDefaultsWrapper
+import UserDefaultsWrapperPlus
 
 final class ObjectValueCoderTests: XCTestCase {
     private let sut: ObjectValueCoder = .init()
-    
-    private func testRoundTrip<T>(
-        of value: T,
-        file: StaticString = #file,
-        line: UInt = #line
-    ) where T: Codable, T: Equatable {
-        UserDefaultsWrapperTests.testRoundTrip(of: value, using: sut, file: file, line: line)
-    }
     
     func test_encode_decode() throws {
         testRoundTrip(of: true)
@@ -45,5 +37,34 @@ final class ObjectValueCoderTests: XCTestCase {
         testRoundTrip(of: Product.banana)
         testRoundTrip(of: Product.banana as Product?)
         testRoundTrip(of: nil as Product?)
+    }
+    
+    private func testRoundTrip<T>(
+        of value: T,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) where T: Codable, T: Equatable {
+        let defaults = UserDefaults.standard
+        let key = "anonymousKey"
+        defer { defaults.removeObject(forKey: key) }
+        
+        let encodedValue: Any
+        do {
+            encodedValue = try sut.encode(value)
+        } catch {
+            XCTFail("\(error) - while encoding \(T.self)", file: file, line: line)
+            return
+        }
+        
+        defaults.set(encodedValue, forKey: key)
+        let loadedObject = defaults.object(forKey: key)!
+        
+        do {
+            let decodedValue = try sut.decode(T.self, from: loadedObject)
+            XCTAssertEqual(decodedValue, value, "value type: \(T.self)",
+                           file: file, line: line)
+        } catch {
+            XCTFail("\(error) - while decoding \(T.self)", file: file, line: line)
+        }
     }
 }

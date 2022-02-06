@@ -1,4 +1,5 @@
 import Foundation
+import UserDefaultsWrapperUtil
 
 @propertyWrapper
 public struct Stored<Value: Codable> {
@@ -55,18 +56,5 @@ public struct Stored<Value: Codable> {
     public var wrappedValue: Value {
         get { preconditionFailure() }
         set { preconditionFailure() }
-    }
-}
-
-private func isNilValue(_ value: Any) -> Bool {
-    return wrapIfNonOptional(value) == nil
-}
-
-private func wrapIfNonOptional(_ value: Any) -> Any? {
-    switch value {
-    case let optionalValue as Any?:
-        return optionalValue
-    default:
-        return value
     }
 }

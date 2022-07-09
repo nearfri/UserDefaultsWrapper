@@ -13,7 +13,7 @@ final class KeyValueLookupTests: XCTestCase {
     }
     
     func test_keyForKeyPath() throws {
-        XCTAssertEqual(sut.key(for: \.intNum), "intNum")
+        XCTAssertEqual(try sut.key(for: \.intNum), "intNum")
     }
     
     func test_storedValue_ofFirstLaunch_returnNil() throws {

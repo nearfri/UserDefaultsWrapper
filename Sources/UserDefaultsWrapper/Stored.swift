@@ -17,15 +17,15 @@ public struct Stored<Value: Codable> {
     
     // https://github.com/apple/swift-evolution/blob/master/proposals/0258-property-wrappers.md#referencing-the-enclosing-self-in-a-wrapper-type
     public static subscript<EnclosingType: KeyValueStoreCoordinator>(
-        _enclosingInstance observed: EnclosingType,
+        _enclosingInstance instance: EnclosingType,
         wrapped wrappedKeyPath: ReferenceWritableKeyPath<EnclosingType, Value>,
         storage storageKeyPath: ReferenceWritableKeyPath<EnclosingType, Self>
     ) -> Value {
         get {
-            observed.register(storageKeyPath: storageKeyPath, forWrappedKeyPath: wrappedKeyPath)
+            instance.register(storageKeyPath: storageKeyPath, forWrappedKeyPath: wrappedKeyPath)
             
-            let wrapper = observed[keyPath: storageKeyPath]
-            let store = observed.store
+            let wrapper = instance[keyPath: storageKeyPath]
+            let store = instance.store
             
             do {
                 let storedValue = try store.value(forKey: wrapper.key, ofType: Value.self)
@@ -37,8 +37,8 @@ public struct Stored<Value: Codable> {
             }
         }
         set {
-            let wrapper = observed[keyPath: storageKeyPath]
-            let store = observed.store
+            let wrapper = instance[keyPath: storageKeyPath]
+            let store = instance.store
             
             do {
                 if isNilValue(newValue) && isNilValue(wrapper.defaultValue) {

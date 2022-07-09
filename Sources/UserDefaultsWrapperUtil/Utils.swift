@@ -18,6 +18,6 @@ public func wrapIfNonOptional(_ value: Any) -> Any? {
     case let optionalValue as Any?:
         return optionalValue
     default:
-        return value
+        preconditionFailure()
     }
 }

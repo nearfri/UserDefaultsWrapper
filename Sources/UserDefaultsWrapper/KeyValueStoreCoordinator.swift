@@ -1,8 +1,15 @@
 import Foundation
 
+extension KeyValueStoreCoordinator {
+    public enum KeyPathError: Error {
+        case invalidKeyPath
+        case typeMismatch
+    }
+}
+
 open class KeyValueStoreCoordinator {
     let store: KeyValueStore
-    var storageKeyPathsByWrappedKeyPath: [AnyKeyPath: AnyKeyPath] = [:]
+    private var storageKeyPathsByWrappedKeyPath: [AnyKeyPath: AnyKeyPath] = [:]
     
     public init(store: KeyValueStore) {
         self.store = store
@@ -17,5 +24,9 @@ open class KeyValueStoreCoordinator {
         if storageKeyPathsByWrappedKeyPath[wrappedKeyPath] == nil {
             storageKeyPathsByWrappedKeyPath[wrappedKeyPath] = storageKeyPath
         }
+    }
+    
+    func storageKeyPath(forWrappedKeyPath wrappedKeyPath: AnyKeyPath) -> AnyKeyPath? {
+        return storageKeyPathsByWrappedKeyPath[wrappedKeyPath]
     }
 }

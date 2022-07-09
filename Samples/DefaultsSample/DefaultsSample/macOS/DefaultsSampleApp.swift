@@ -3,7 +3,7 @@ import SwiftUI
 @main
 struct DefaultsSampleApp: App {
     @NSApplicationDelegateAdaptor
-    var appDelegate: AppDelegate
+    private var appDelegate: AppDelegate
     
     var body: some Scene {
         WindowGroup {

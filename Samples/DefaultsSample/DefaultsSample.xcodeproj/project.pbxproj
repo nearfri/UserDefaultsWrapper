@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		08B1F7DF287BE03C00683647 /* View+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B1F7DE287BE03C00683647 /* View+.swift */; };
 		08E3F08F2879C32C002D98CD /* DefaultsSampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E3F08E2879C32C002D98CD /* DefaultsSampleApp.swift */; platformFilter = ios; };
 		08E3F0912879C32C002D98CD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E3F0902879C32C002D98CD /* ContentView.swift */; };
 		08E3F0932879C32D002D98CD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 08E3F0922879C32D002D98CD /* Assets.xcassets */; };
@@ -40,6 +41,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		08B1F7DE287BE03C00683647 /* View+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "View+.swift"; sourceTree = "<group>"; };
 		08E3F08B2879C32C002D98CD /* DefaultsSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DefaultsSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		08E3F08E2879C32C002D98CD /* DefaultsSampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsSampleApp.swift; sourceTree = "<group>"; };
 		08E3F0902879C32C002D98CD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 			isa = PBXGroup;
 			children = (
 				08E3F0902879C32C002D98CD /* ContentView.swift */,
+				08B1F7DE287BE03C00683647 /* View+.swift */,
 				08E3F0C42879C56C002D98CD /* AppSetting.swift */,
 				08E3F0C52879C56C002D98CD /* Preferences.swift */,
 				08E3F0CF2879C728002D98CD /* iOS */,
@@ -316,6 +319,7 @@
 				08E3F0BA2879C40E002D98CD /* AppDelegate.swift in Sources */,
 				08E3F0D12879C734002D98CD /* DefaultsSampleApp.swift in Sources */,
 				08E3F0912879C32C002D98CD /* ContentView.swift in Sources */,
+				08B1F7DF287BE03C00683647 /* View+.swift in Sources */,
 				08E3F0C72879C56C002D98CD /* Preferences.swift in Sources */,
 				08E3F0C62879C56C002D98CD /* AppSetting.swift in Sources */,
 				08E3F08F2879C32C002D98CD /* DefaultsSampleApp.swift in Sources */,

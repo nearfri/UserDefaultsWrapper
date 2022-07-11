@@ -5,8 +5,6 @@ import UserDefaultsWrapperPlus
 
 protocol Settings: AnyObject {
     var greeting: String { get set }
-    
-    func publisher<T: Codable>(for keyPath: KeyPath<Settings, T>) -> AnyPublisher<T, Never>
 }
 
 final class Preferences: KeyValueStoreCoordinator, Settings, KeyValueLookup {
@@ -21,11 +19,7 @@ final class Preferences: KeyValueStoreCoordinator, Settings, KeyValueLookup {
             defaults: .standard,
             valueCoder: ObjectValueCoder()))
     
+    #if DEBUG
     static let inMemory: Preferences = .init(store: InMemoryStore())
-    
-    func publisher<T: Codable>(for keyPath: KeyPath<Settings, T>) -> AnyPublisher<T, Never> {
-        let p = unsafePublisher(for: keyPath)
-        print(p)
-        fatalError()
-    }
+    #endif
 }

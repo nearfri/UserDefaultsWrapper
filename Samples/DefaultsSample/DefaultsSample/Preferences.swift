@@ -7,7 +7,7 @@ protocol Settings: AnyObject {
     var greeting: String { get set }
 }
 
-final class Preferences: KeyValueStoreCoordinator, Settings, KeyValueLookup {
+final class Preferences: KeyValueStoreCoordinator, KeyValueLookup, Settings {
     @Stored("age")
     var age: Int = 30
     

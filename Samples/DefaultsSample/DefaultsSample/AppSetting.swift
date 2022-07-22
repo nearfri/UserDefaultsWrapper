@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 
 @propertyWrapper
-struct AppSetting<T> {
+struct AppSetting<T>: DynamicProperty {
     private let keyPath: ReferenceWritableKeyPath<Settings, T>
     
     init(_ keyPath: ReferenceWritableKeyPath<Settings, T>) {
@@ -15,5 +15,9 @@ struct AppSetting<T> {
     var wrappedValue: T {
         get { Preferences.standard[keyPath: keyPath] }
         nonmutating set { Preferences.standard[keyPath: keyPath] = newValue }
+    }
+    
+    mutating func update() {
+        
     }
 }

@@ -1,7 +1,12 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var isBold: Bool = false
+    @ObservedObject
+    private(set) var viewModel: ContentViewModel
+    
+    @AppStorage("text_isBold")
+    private var isBold: Bool = false
+    
     @State private var isItalic: Bool = false
     @State private var isUnderline: Bool = false
     @State private var isStrikethrough: Bool = false
@@ -45,7 +50,7 @@ struct ContentView: View {
                 title: "Bold",
                 imageName: "bold"),
             TextStyleData(
-                isOn: $isItalic,
+                isOn: $viewModel.isItalic,
                 title: "Italic",
                 imageName: "italic"),
             TextStyleData(
@@ -68,6 +73,6 @@ private struct TextStyleData {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(viewModel: ContentViewModel())
     }
 }

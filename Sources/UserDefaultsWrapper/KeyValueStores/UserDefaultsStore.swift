@@ -5,59 +5,37 @@ public class UserDefaultsStore: KeyValueStore, ObservableObject {
     public let defaults: UserDefaults
     public let valueCoder: ValueCoder
     
-    private let cache: KeyValueStore = InMemoryStore()
     private let defaultsObserver: UserDefaultsObserver
     
     public init(defaults: UserDefaults = .standard, valueCoder: ValueCoder) {
         self.defaults = defaults
         self.valueCoder = valueCoder
-        self.defaultsObserver = UserDefaultsObserver(defaults: defaults, cache: cache)
+        self.defaultsObserver = UserDefaultsObserver(defaults: defaults)
     }
     
     public func value<T: Codable>(forKey key: String, ofType type: T.Type) throws -> T? {
-        if let cachedValue = try cache.value(forKey: key, ofType: type) {
-            return cachedValue
-        }
-        
         defaultsObserver.addObservation(forKey: key)
         
-        guard let encodedValue = defaults.object(forKey: key) else {
-            try? cache.setValue(nil as T?, forKey: key)
-            return nil
-        }
-        
-        let result = try valueCoder.decode(type, from: encodedValue)
-        
-        try? cache.setValue(result, forKey: key)
-        
-        return result
-    }
-    
-    private func addObservation<T: Codable>(forKey key: String, ofType type: T.Type) {
-        if defaultsObserver.hasObservation(forKey: key) { return }
-        
-        _ = try? value(forKey: key, ofType: type)
+        guard let encodedValue = defaults.object(forKey: key) else { return nil }
+        return try valueCoder.decode(type, from: encodedValue)
     }
     
     public func setValue<T: Codable>(_ value: T, forKey key: String) throws {
+        defaultsObserver.addObservation(forKey: key)
+        
         let encodedValue = try valueCoder.encode(value)
-        
-        addObservation(forKey: key, ofType: T.self)
-        
         defaults.set(encodedValue, forKey: key)
     }
     
     public func removeValue(forKey key: String) {
+        defaultsObserver.addObservation(forKey: key)
+        
         defaults.removeObject(forKey: key)
     }
     
     @discardableResult
     public func synchronize() -> Bool {
         return defaults.synchronize()
-    }
-    
-    public var objectWillChange: AnyPublisher<String, Never> {
-        return defaultsObserver.objectWillChange
     }
     
     public var objectDidChange: AnyPublisher<String, Never> {
@@ -67,15 +45,12 @@ public class UserDefaultsStore: KeyValueStore, ObservableObject {
 
 private class UserDefaultsObserver: NSObject {
     private let defaults: UserDefaults
-    private let cache: KeyValueStore
-    private let willChange: PassthroughSubject<String, Never> = .init()
     private let didChange: PassthroughSubject<String, Never> = .init()
     
     private var keys: Set<String> = []
     
-    init(defaults: UserDefaults, cache: KeyValueStore) {
+    init(defaults: UserDefaults) {
         self.defaults = defaults
-        self.cache = cache
         
         super.init()
     }
@@ -84,16 +59,8 @@ private class UserDefaultsObserver: NSObject {
         keys.forEach({ defaults.removeObserver(self, forKeyPath: $0) })
     }
     
-    var objectWillChange: AnyPublisher<String, Never> {
-        return willChange.eraseToAnyPublisher()
-    }
-    
     var objectDidChange: AnyPublisher<String, Never> {
         return didChange.eraseToAnyPublisher()
-    }
-    
-    func hasObservation(forKey key: String) -> Bool {
-        return keys.contains(key)
     }
     
     func addObservation(forKey key: String) {
@@ -110,10 +77,6 @@ private class UserDefaultsObserver: NSObject {
         context: UnsafeMutableRawPointer?
     ) {
         guard let key = keyPath else { return }
-        
-        willChange.send(key)
-        
-        cache.removeValue(forKey: key)
         
         didChange.send(key)
     }

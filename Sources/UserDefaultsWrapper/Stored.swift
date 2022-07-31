@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import UserDefaultsWrapperUtil
 
 @propertyWrapper
@@ -6,13 +7,22 @@ public struct Stored<Value: Codable> {
     let key: String
     private let defaultValue: Value
     
+    @Box
+    private var cache: Cache?
+    
     public init(wrappedValue: Value, _ key: String) {
-        self.defaultValue = wrappedValue
         self.key = key
+        self.defaultValue = wrappedValue
     }
     
     public init<OptionalWrapped>(_ key: String) where Value == OptionalWrapped? {
         self.init(wrappedValue: nil, key)
+    }
+    
+    @available(*, unavailable, message: "@Stored can only be applied to KeyValueStoreCoordinator")
+    public var wrappedValue: Value {
+        get { preconditionFailure() }
+        set { preconditionFailure() }
     }
     
     // https://github.com/apple/swift-evolution/blob/master/proposals/0258-property-wrappers.md#referencing-the-enclosing-self-in-a-wrapper-type
@@ -24,17 +34,7 @@ public struct Stored<Value: Codable> {
         get {
             instance.register(storageKeyPath: storageKeyPath, forWrappedKeyPath: wrappedKeyPath)
             
-            let wrapper = instance[keyPath: storageKeyPath]
-            let store = instance.store
-            
-            do {
-                let storedValue = try store.value(forKey: wrapper.key, ofType: Value.self)
-                return storedValue ?? wrapper.defaultValue
-            } catch {
-                assertionFailure("Failed to get '\(wrapper.key)': \(error)")
-                store.removeValue(forKey: wrapper.key)
-                return wrapper.defaultValue
-            }
+            return cache(at: storageKeyPath, in: instance).value
         }
         set {
             let wrapper = instance[keyPath: storageKeyPath]
@@ -52,9 +52,72 @@ public struct Stored<Value: Codable> {
         }
     }
     
+    private static func cache<EnclosingType: KeyValueStoreCoordinator>(
+        at storageKeyPath: ReferenceWritableKeyPath<EnclosingType, Self>,
+        in instance: EnclosingType
+    ) -> Stored.Cache {
+        let wrapper = instance[keyPath: storageKeyPath]
+        
+        if let cache = wrapper.cache {
+            return cache
+        }
+        
+        let cache = Cache(store: instance.store,
+                          key: wrapper.key,
+                          defaultValue: wrapper.defaultValue)
+        
+        wrapper.cache = cache
+        
+        return cache
+    }
+    
+    public typealias Publisher = AnyPublisher<Value, Never>
+    
     @available(*, unavailable, message: "@Stored can only be applied to KeyValueStoreCoordinator")
-    public var wrappedValue: Value {
+    public var projectedValue: Publisher {
         get { preconditionFailure() }
-        set { preconditionFailure() }
+    }
+    
+    public static subscript<EnclosingType: KeyValueStoreCoordinator>(
+        _enclosingInstance instance: EnclosingType,
+        projected projectedKeyPath: KeyPath<EnclosingType, Publisher>,
+        storage storageKeyPath: ReferenceWritableKeyPath<EnclosingType, Self>
+    ) -> Publisher {
+        get {
+            return cache(at: storageKeyPath, in: instance).$value.eraseToAnyPublisher()
+        }
+    }
+}
+
+private extension Stored {
+    @propertyWrapper
+    class Box {
+        var wrappedValue: Cache?
+    }
+    
+    class Cache {
+        @Published
+        private(set) var value: Value
+        
+        private var subscriptions: Set<AnyCancellable> = []
+        
+        init(store: KeyValueStore, key: String, defaultValue: Value) {
+            value = Cache.value(forKey: key, in: store) ?? defaultValue
+            
+            store.objectDidChange.filter({ $0 == key }).sink { [unowned self, unowned store] _ in
+                value = Cache.value(forKey: key, in: store) ?? defaultValue
+            }
+            .store(in: &subscriptions)
+        }
+        
+        private static func value(forKey key: String, in store: KeyValueStore) -> Value? {
+            do {
+                return try store.value(forKey: key, ofType: Value.self)
+            } catch {
+                assertionFailure("Failed to get '\(key)': \(error)")
+                store.removeValue(forKey: key)
+                return nil
+            }
+        }
     }
 }

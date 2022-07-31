@@ -9,6 +9,5 @@ public protocol KeyValueStore: AnyObject {
     @discardableResult
     func synchronize() -> Bool
     
-    var objectWillChange: AnyPublisher<String, Never> { get }
     var objectDidChange: AnyPublisher<String, Never> { get }
 }

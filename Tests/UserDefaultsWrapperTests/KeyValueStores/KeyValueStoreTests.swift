@@ -97,15 +97,7 @@ final class KeyValueStoreTests: XCTestCase {
             
             defer { sut.removeValue(forKey: key) }
             
-            var valueBefore: String?
             var valueAfter: String?
-            var currentValue: String?
-            
-            sut.objectWillChange.sink { [sut] k in
-                XCTAssertEqual(k, key, "\(storeType)")
-                valueBefore = try? sut!.value(forKey: key, ofType: String.self)
-            }
-            .store(in: &subscriptions)
             
             sut.objectDidChange.sink { [sut] k in
                 XCTAssertEqual(k, key, "\(storeType)")
@@ -114,19 +106,10 @@ final class KeyValueStoreTests: XCTestCase {
             .store(in: &subscriptions)
             
             try sut.setValue("Step 1", forKey: key)
-            currentValue = try sut.value(forKey: key, ofType: String.self)
-            
-            XCTAssertEqual(currentValue, "Step 1", "\(storeType)")
-            XCTAssertEqual(valueBefore, nil, "\(storeType)")
             XCTAssertEqual(valueAfter, "Step 1", "\(storeType)")
             
-            (valueBefore, valueAfter, currentValue) = (nil, nil, nil)
-            
+            valueAfter = nil
             try sut.setValue("Step 2", forKey: key)
-            currentValue = try sut.value(forKey: key, ofType: String.self)
-            
-            XCTAssertEqual(currentValue, "Step 2", "\(storeType)")
-            XCTAssertEqual(valueBefore, "Step 1", "\(storeType)")
             XCTAssertEqual(valueAfter, "Step 2", "\(storeType)")
         } catch {
             XCTFail("\(error) - \(storeType)")

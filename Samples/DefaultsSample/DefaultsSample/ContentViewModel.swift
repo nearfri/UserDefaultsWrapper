@@ -4,7 +4,7 @@ import Combine
 
 class ContentViewModel: ObservableObject {
 //    @Published
-    @AppStorage("text_isItalic")
+    @AppStorage("isItalic")
     var isItalic: Bool = false
     
     private var subscriptions: [AnyCancellable] = []

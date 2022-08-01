@@ -4,12 +4,17 @@ struct ContentView: View {
     @ObservedObject
     private(set) var viewModel: ContentViewModel
     
-    @AppStorage("text_isBold")
+    @AppStorage("isBold")
     private var isBold: Bool = false
     
-    @State private var isItalic: Bool = false
-    @State private var isUnderline: Bool = false
-    @State private var isStrikethrough: Bool = false
+    @AppStorage("isItalic")
+    private var isItalic: Bool = false
+    
+    @AppSetting(\.isUnderline)
+    private var isUnderline: Bool
+    
+    @AppSetting(\.isStrikethrough)
+    private var isStrikethrough: Bool
     
 #if os(iOS)
     @Environment(\.horizontalSizeClass)
@@ -50,7 +55,7 @@ struct ContentView: View {
                 title: "Bold",
                 imageName: "bold"),
             TextStyleData(
-                isOn: $viewModel.isItalic,
+                isOn: $isItalic,
                 title: "Italic",
                 imageName: "italic"),
             TextStyleData(

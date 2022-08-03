@@ -14,7 +14,7 @@ class InMemorySettings: Settings {
 
 class InMemorySettingsAccess: SettingsAccess {
     private let settings: InMemorySettings
-    private let subject: PassthroughSubject<AnyKeyPath, Never> = .init()
+    private let subject: PassthroughSubject<(AnyKeyPath, Any), Never> = .init()
     
     init(settings: InMemorySettings = .init()) {
         self.settings = settings
@@ -29,12 +29,12 @@ class InMemorySettingsAccess: SettingsAccess {
             return settings[keyPath: keyPath]
         }
         set {
-            subject.send(keyPath)
+            subject.send((keyPath, newValue))
             settings[keyPath: keyPath] = newValue
         }
     }
     
-    func publisher<T: Codable>(for keyPath: KeyPath<Settings, T>) -> AnyPublisher<Void, Never> {
-        return subject.filter({ $0 == keyPath }).map({ _ in () }).eraseToAnyPublisher()
+    func publisher<T: Codable>(for keyPath: KeyPath<Settings, T>) -> AnyPublisher<T, Never> {
+        return subject.filter({ $0.0 == keyPath }).map({ $0.1 as! T }).eraseToAnyPublisher()
     }
 }

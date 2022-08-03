@@ -19,5 +19,5 @@ protocol SettingsAccess: AnyObject {
         dynamicMember keyPath: ReferenceWritableKeyPath<Settings, T>
     ) -> T { get set }
     
-    func publisher<T: Codable>(for keyPath: KeyPath<Settings, T>) -> AnyPublisher<Void, Never>
+    func publisher<T: Codable>(for keyPath: KeyPath<Settings, T>) -> AnyPublisher<T, Never>
 }

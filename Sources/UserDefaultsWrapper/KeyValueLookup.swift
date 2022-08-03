@@ -24,6 +24,11 @@ extension KeyValueLookup where Self: KeyValueStoreCoordinator {
         return try Stored<T>.publisher(instance: self, storageKeyPath: storageKeyPath(for: keyPath))
     }
     
+    // Compile error - Type 'Self' constrained to non-protocol, non-class type 'P'
+//    public func keyPathConverted<P, T: Codable>(
+//        fromProtocolKeyPath protocolKeyPath: KeyPath<P, T>
+//    ) throws -> KeyPath<Self, T> where Self: P {}
+    
     public func keyPathConverted<T: Codable>(
         fromProtocolKeyPath protocolKeyPath: AnyKeyPath, valueType: T.Type
     ) throws -> KeyPath<Self, T> {

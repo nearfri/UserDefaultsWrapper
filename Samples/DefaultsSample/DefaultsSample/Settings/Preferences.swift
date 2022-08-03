@@ -34,3 +34,36 @@ final class Preferences: KeyValueStoreCoordinator, KeyValueLookup, Settings {
     static let inMemory: Preferences = .init(store: InMemoryStore())
     #endif
 }
+
+class PreferencesAccess: SettingsAccess {
+    private let preferences: Preferences
+    
+    init(preferences: Preferences) {
+        self.preferences = preferences
+    }
+    
+    subscript<T: Codable>(dynamicMember keyPath: KeyPath<Settings, T>) -> T {
+        return preferences[keyPath: keyPath]
+    }
+    
+    subscript<T: Codable>(dynamicMember keyPath: ReferenceWritableKeyPath<Settings, T>) -> T {
+        get {
+            return preferences[keyPath: keyPath]
+        }
+        set {
+            preferences[keyPath: keyPath] = newValue
+        }
+    }
+    
+    func publisher<T: Codable>(for keyPath: KeyPath<Settings, T>) -> AnyPublisher<T, Never> {
+        do {
+            let concreteKeyPath = try preferences.keyPathConverted(
+                fromProtocolKeyPath: keyPath,
+                valueType: T.self)
+            
+            return try preferences.publisher(for: concreteKeyPath).eraseToAnyPublisher()
+        } catch {
+            preconditionFailure("\(error)")
+        }
+    }
+}

@@ -45,7 +45,7 @@ private extension AppSetting {
             
             self.settings = settings
             
-            subscription = settings.publisher(for: keyPath).sink { [weak self] in
+            subscription = settings.publisher(for: keyPath).sink { [weak self] _ in
                 self?.objectWillChange.send()
             }
         }

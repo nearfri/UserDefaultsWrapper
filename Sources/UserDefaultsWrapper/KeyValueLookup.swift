@@ -4,8 +4,13 @@ import Combine
 public protocol KeyValueLookup: AnyObject {
     func publisher<T: Codable>(for keyPath: KeyPath<Self, T>) throws -> Stored<T>.Publisher
     
-    func keyPathConverted<T: Codable>(
-        fromProtocolKeyPath protocolKeyPath: AnyKeyPath, valueType: T.Type
+    // Compile error - Type 'Self' constrained to non-protocol, non-class type 'P'
+//    func keyPathConverted<P, T: Codable>(
+//        fromProtocolKeyPath protocolKeyPath: KeyPath<P, T>
+//    ) throws -> KeyPath<Self, T> where Self: P {}
+    
+    func keyPathConverted<P, T: Codable>(
+        fromProtocolKeyPath protocolKeyPath: KeyPath<P, T>
     ) throws -> KeyPath<Self, T>
     
     func key<T: Codable>(for keyPath: KeyPath<Self, T>) throws -> String
@@ -24,15 +29,10 @@ extension KeyValueLookup where Self: KeyValueStoreCoordinator {
         return try Stored<T>.publisher(instance: self, storageKeyPath: storageKeyPath(for: keyPath))
     }
     
-    // Compile error - Type 'Self' constrained to non-protocol, non-class type 'P'
-//    public func keyPathConverted<P, T: Codable>(
-//        fromProtocolKeyPath protocolKeyPath: KeyPath<P, T>
-//    ) throws -> KeyPath<Self, T> where Self: P {}
-    
-    public func keyPathConverted<T: Codable>(
-        fromProtocolKeyPath protocolKeyPath: AnyKeyPath, valueType: T.Type
+    public func keyPathConverted<P, T: Codable>(
+        fromProtocolKeyPath protocolKeyPath: KeyPath<P, T>
     ) throws -> KeyPath<Self, T> {
-        precondition(type(of: protocolKeyPath).valueType == valueType)
+        precondition(self is P)
         
         switch wrappedKeyPathConverted(fromProtocolKeyPath: protocolKeyPath) {
         case let result as KeyPath<Self, T>:

@@ -57,9 +57,7 @@ class PreferencesAccess: SettingsAccess {
     
     func publisher<T: Codable>(for keyPath: KeyPath<Settings, T>) -> AnyPublisher<T, Never> {
         do {
-            let concreteKeyPath = try preferences.keyPathConverted(
-                fromProtocolKeyPath: keyPath,
-                valueType: T.self)
+            let concreteKeyPath = try preferences.keyPathConverted(fromProtocolKeyPath: keyPath)
             
             return try preferences.publisher(for: concreteKeyPath).eraseToAnyPublisher()
         } catch {

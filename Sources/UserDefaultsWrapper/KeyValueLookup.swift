@@ -2,6 +2,12 @@ import Foundation
 import Combine
 
 public protocol KeyValueLookup: AnyObject {
+    func publisher<T: Codable>(for keyPath: KeyPath<Self, T>) throws -> Stored<T>.Publisher
+    
+    func keyPathConverted<T: Codable>(
+        fromProtocolKeyPath protocolKeyPath: AnyKeyPath, valueType: T.Type
+    ) throws -> KeyPath<Self, T>
+    
     func key<T: Codable>(for keyPath: KeyPath<Self, T>) throws -> String
     
     func storedValue<T: Codable>(for keyPath: KeyPath<Self, T>) throws -> T?
@@ -14,6 +20,25 @@ public protocol KeyValueLookup: AnyObject {
 }
 
 extension KeyValueLookup where Self: KeyValueStoreCoordinator {
+    public func publisher<T: Codable>(for keyPath: KeyPath<Self, T>) throws -> Stored<T>.Publisher {
+        return try Stored<T>.publisher(instance: self, storageKeyPath: storageKeyPath(for: keyPath))
+    }
+    
+    public func keyPathConverted<T: Codable>(
+        fromProtocolKeyPath protocolKeyPath: AnyKeyPath, valueType: T.Type
+    ) throws -> KeyPath<Self, T> {
+        precondition(type(of: protocolKeyPath).valueType == valueType)
+        
+        switch wrappedKeyPathConverted(fromProtocolKeyPath: protocolKeyPath) {
+        case let result as KeyPath<Self, T>:
+            return result
+        case _?:
+            throw KeyValueStoreCoordinator.KeyPathError.typeMismatch
+        case nil:
+            throw KeyValueStoreCoordinator.KeyPathError.invalidKeyPath
+        }
+    }
+    
     public func key<T: Codable>(for keyPath: KeyPath<Self, T>) throws -> String {
         return try self[keyPath: storageKeyPath(for: keyPath)].key
     }
@@ -21,11 +46,6 @@ extension KeyValueLookup where Self: KeyValueStoreCoordinator {
     private func storageKeyPath<T: Codable>(
         for keyPath: KeyPath<Self, T>
     ) throws -> KeyPath<Self, Stored<T>> {
-        if storageKeyPath(forWrappedKeyPath: keyPath) == nil {
-            // Register the keyPath by accessing the value
-            _ = self[keyPath: keyPath]
-        }
-        
         switch storageKeyPath(forWrappedKeyPath: keyPath) {
         case let result as KeyPath<Self, Stored<T>>:
             return result

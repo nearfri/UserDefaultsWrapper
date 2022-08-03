@@ -33,6 +33,7 @@ public struct Stored<Value: Codable> {
     ) -> Value {
         get {
             instance.register(storageKeyPath: storageKeyPath, forWrappedKeyPath: wrappedKeyPath)
+            instance.lastAccessedWrappedKeyPath = wrappedKeyPath
             
             return cache(at: storageKeyPath, in: instance).value
         }
@@ -53,7 +54,7 @@ public struct Stored<Value: Codable> {
     }
     
     private static func cache<EnclosingType: KeyValueStoreCoordinator>(
-        at storageKeyPath: ReferenceWritableKeyPath<EnclosingType, Self>,
+        at storageKeyPath: KeyPath<EnclosingType, Self>,
         in instance: EnclosingType
     ) -> Stored.Cache {
         let wrapper = instance[keyPath: storageKeyPath]
@@ -67,6 +68,8 @@ public struct Stored<Value: Codable> {
                           defaultValue: wrapper.defaultValue)
         
         wrapper.cache = cache
+        
+        instance.registerStoragePublisher(cache.$value)
         
         return cache
     }
@@ -84,8 +87,15 @@ public struct Stored<Value: Codable> {
         storage storageKeyPath: ReferenceWritableKeyPath<EnclosingType, Self>
     ) -> Publisher {
         get {
-            return cache(at: storageKeyPath, in: instance).$value.eraseToAnyPublisher()
+            return publisher(instance: instance, storageKeyPath: storageKeyPath)
         }
+    }
+    
+    static func publisher<EnclosingType: KeyValueStoreCoordinator>(
+        instance: EnclosingType,
+        storageKeyPath: KeyPath<EnclosingType, Self>
+    ) -> Publisher {
+        return cache(at: storageKeyPath, in: instance).$value.eraseToAnyPublisher()
     }
 }
 

@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 extension KeyValueStoreCoordinator {
     public enum KeyPathError: Error {
@@ -7,9 +8,14 @@ extension KeyValueStoreCoordinator {
     }
 }
 
-open class KeyValueStoreCoordinator {
+open class KeyValueStoreCoordinator: ObservableObject {
     let store: KeyValueStore
+    
     private var storageKeyPathsByWrappedKeyPath: [AnyKeyPath: AnyKeyPath] = [:]
+    
+    var lastAccessedWrappedKeyPath: AnyKeyPath?
+    
+    private var subscriptions: Set<AnyCancellable> = []
     
     public init(store: KeyValueStore) {
         self.store = store
@@ -27,6 +33,29 @@ open class KeyValueStoreCoordinator {
     }
     
     func storageKeyPath(forWrappedKeyPath wrappedKeyPath: AnyKeyPath) -> AnyKeyPath? {
+        if storageKeyPathsByWrappedKeyPath[wrappedKeyPath] == nil {
+            // Register the storageKeyPath by accessing the value
+            _ = self[keyPath: wrappedKeyPath]
+        }
+        
         return storageKeyPathsByWrappedKeyPath[wrappedKeyPath]
+    }
+    
+    func registerStoragePublisher<P, T>(
+        _ publisher: P
+    ) where P: Publisher, P.Output == T, P.Failure == Never {
+        publisher.sink { [weak self] _ in
+            self?.objectWillChange.send()
+        }
+        .store(in: &subscriptions)
+    }
+    
+    func wrappedKeyPathConverted(fromProtocolKeyPath protocolKeyPath: AnyKeyPath) -> AnyKeyPath? {
+        var result: AnyKeyPath?
+        
+        _ = self[keyPath: protocolKeyPath]
+        result = lastAccessedWrappedKeyPath
+        
+        return result
     }
 }

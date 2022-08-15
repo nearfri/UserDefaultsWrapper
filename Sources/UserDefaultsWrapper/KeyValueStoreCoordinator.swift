@@ -21,6 +21,15 @@ open class KeyValueStoreCoordinator: ObservableObject {
     
     public init(store: KeyValueStore) {
         self.store = store
+        
+        setupStorages()
+    }
+    
+    private func setupStorages() {
+        for child in Mirror(reflecting: self).children {
+            guard let storage = child.value as? ConfigurableWithCoordinator else { continue }
+            storage.setup(with: self)
+        }
     }
     
     @discardableResult
@@ -61,3 +70,9 @@ open class KeyValueStoreCoordinator: ObservableObject {
         return result
     }
 }
+
+private protocol ConfigurableWithCoordinator {
+    func setup(with storeCoordinator: KeyValueStoreCoordinator)
+}
+
+extension Stored: ConfigurableWithCoordinator {}

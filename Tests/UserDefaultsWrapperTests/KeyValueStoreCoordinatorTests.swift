@@ -128,8 +128,6 @@ final class KeyValueStoreCoordinatorTests: XCTestCase {
         // Given
         var oldValue: Int?
         
-        XCTAssertEqual(sut.intNum, Default.intNum)
-        
         // When
         sut.objectWillChange.sink { [sut] _ in
             oldValue = sut?.intNum

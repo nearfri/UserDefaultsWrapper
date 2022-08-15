@@ -30,7 +30,7 @@ struct AppSetting<T: Codable>: DynamicProperty {
     }
     
     mutating func update() {
-        observer.observe(keyPath, from: settings)
+        observer.observe(keyPath, of: settings)
     }
 }
 
@@ -40,7 +40,7 @@ private extension AppSetting {
         
         private var subscription: AnyCancellable?
         
-        func observe(_ keyPath: KeyPath<Settings, T>, from settings: SettingsAccess) {
+        func observe(_ keyPath: KeyPath<Settings, T>, of settings: SettingsAccess) {
             if self.settings === settings { return }
             
             self.settings = settings

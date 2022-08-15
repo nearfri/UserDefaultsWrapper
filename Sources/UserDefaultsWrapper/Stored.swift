@@ -10,7 +10,7 @@ public struct Stored<Value: Codable> {
     private let defaultValue: Value
     
     @Box
-    private var cache: Cache?
+    private var cache: Cache!
     
     public init(wrappedValue: Value, _ key: String) {
         self.key = key
@@ -37,7 +37,7 @@ public struct Stored<Value: Codable> {
             instance.register(storageKeyPath: storageKeyPath, forWrappedKeyPath: wrappedKeyPath)
             instance.lastAccessedWrappedKeyPath = wrappedKeyPath
             
-            return cache(at: storageKeyPath, in: instance).value
+            return instance[keyPath: storageKeyPath].cache.value
         }
         set {
             let wrapper = instance[keyPath: storageKeyPath]
@@ -55,25 +55,14 @@ public struct Stored<Value: Codable> {
         }
     }
     
-    private static func cache<EnclosingType: KeyValueStoreCoordinator>(
-        at storageKeyPath: KeyPath<EnclosingType, Self>,
-        in instance: EnclosingType
-    ) -> Stored.Cache {
-        let wrapper = instance[keyPath: storageKeyPath]
+    func setup(with storeCoordinator: KeyValueStoreCoordinator) {
+        let cache = Cache(store: storeCoordinator.store,
+                          key: key,
+                          defaultValue: defaultValue)
         
-        if let cache = wrapper.cache {
-            return cache
-        }
+        self.cache = cache
         
-        let cache = Cache(store: instance.store,
-                          key: wrapper.key,
-                          defaultValue: wrapper.defaultValue)
-        
-        wrapper.cache = cache
-        
-        instance.registerStoragePublisher(cache.$value)
-        
-        return cache
+        storeCoordinator.registerStoragePublisher(cache.$value)
     }
     
     @available(*, unavailable, message: "@Stored can only be applied to KeyValueStoreCoordinator")
@@ -95,7 +84,7 @@ public struct Stored<Value: Codable> {
         instance: EnclosingType,
         storageKeyPath: KeyPath<EnclosingType, Self>
     ) -> Publisher {
-        return cache(at: storageKeyPath, in: instance).$value.eraseToAnyPublisher()
+        return instance[keyPath: storageKeyPath].cache.$value.eraseToAnyPublisher()
     }
 }
 

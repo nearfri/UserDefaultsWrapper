@@ -48,12 +48,8 @@ class PreferencesAccess: SettingsAccess {
     }
     
     subscript<T: Codable>(dynamicMember keyPath: ReferenceWritableKeyPath<Settings, T>) -> T {
-        get {
-            return preferences[keyPath: keyPath]
-        }
-        set {
-            preferences[keyPath: keyPath] = newValue
-        }
+        get { preferences[keyPath: keyPath] }
+        set { preferences[keyPath: keyPath] = newValue }
     }
     
     func publisher<T: Codable>(for keyPath: KeyPath<Settings, T>) -> AnyPublisher<T, Never> {

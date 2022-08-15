@@ -1,33 +1,17 @@
 import Foundation
 import Combine
 
-public protocol KeyValueLookup: AnyObject {
-    func publisher<T: Codable>(for keyPath: KeyPath<Self, T>) throws -> Stored<T>.Publisher
-    
-    // Compile error - Type 'Self' constrained to non-protocol, non-class type 'P'
-//    func keyPathConverted<P, T: Codable>(
-//        fromProtocolKeyPath protocolKeyPath: KeyPath<P, T>
-//    ) throws -> KeyPath<Self, T> where Self: P {}
-    
-    func keyPathConverted<P, T: Codable>(
-        fromProtocolKeyPath protocolKeyPath: KeyPath<P, T>
-    ) throws -> KeyPath<Self, T>
-    
-    func key<T: Codable>(for keyPath: KeyPath<Self, T>) throws -> String
-    
-    func storedValue<T: Codable>(for keyPath: KeyPath<Self, T>) throws -> T?
-    
-    func hasStoredValue<T: Codable>(for keyPath: KeyPath<Self, T>) -> Bool
-    
-    func removeStoredValue<T: Codable>(for keyPath: KeyPath<Self, T>)
-    
-    func removeAllStoredValues()
-}
+public protocol KeyValueLookup: AnyObject {}
 
 extension KeyValueLookup where Self: KeyValueStoreCoordinator {
     public func publisher<T: Codable>(for keyPath: KeyPath<Self, T>) throws -> Stored<T>.Publisher {
         return try Stored<T>.publisher(instance: self, storageKeyPath: storageKeyPath(for: keyPath))
     }
+    
+    // Compile error - Type 'Self' constrained to non-protocol, non-class type 'P'
+//    func keyPathConverted<P, T: Codable>(
+//        fromProtocolKeyPath protocolKeyPath: KeyPath<P, T>
+//    ) throws -> KeyPath<Self, T> where Self: P {}
     
     public func keyPathConverted<P, T: Codable>(
         fromProtocolKeyPath protocolKeyPath: KeyPath<P, T>

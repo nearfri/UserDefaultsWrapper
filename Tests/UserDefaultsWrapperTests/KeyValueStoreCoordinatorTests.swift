@@ -7,10 +7,15 @@ private typealias Default = FakeCoordinator.Default
 final class KeyValueStoreCoordinatorTests: XCTestCase {
     private var sut: FakeCoordinator!
     private var keyValueStore: KeyValueStore!
+    private var subscriptions: Set<AnyCancellable> = []
     
     override func setUpWithError() throws {
         keyValueStore = InMemoryStore()
         sut = FakeCoordinator(store: keyValueStore)
+    }
+    
+    override func tearDownWithError() throws {
+        subscriptions = []
     }
     
     func test_init_ofFirstLaunch_hasDefaultValues() throws {
@@ -72,8 +77,6 @@ final class KeyValueStoreCoordinatorTests: XCTestCase {
     }
     
     func test_projectedValue() throws {
-        var subscriptions: Set<AnyCancellable> = []
-        
         var newStr: String?
         var sutStr: String?
         
@@ -98,8 +101,6 @@ final class KeyValueStoreCoordinatorTests: XCTestCase {
     }
     
     func test_projectedValue_optional() throws {
-        var subscriptions: Set<AnyCancellable> = []
-        
         var newNum: Int? = -1
         var sutNum: Int? = -1
         
@@ -121,5 +122,24 @@ final class KeyValueStoreCoordinatorTests: XCTestCase {
         
         XCTAssertEqual(newNum, nil)
         XCTAssertEqual(sutNum, 3)
+    }
+    
+    func test_objectWillChange() throws {
+        // Given
+        var oldValue: Int?
+        
+        XCTAssertEqual(sut.intNum, Default.intNum)
+        
+        // When
+        sut.objectWillChange.sink { [sut] _ in
+            oldValue = sut?.intNum
+        }
+        .store(in: &subscriptions)
+        
+        sut.intNum = 7
+        
+        // Then
+        XCTAssertNotEqual(oldValue, sut.intNum)
+        XCTAssertEqual(oldValue, Default.intNum)
     }
 }

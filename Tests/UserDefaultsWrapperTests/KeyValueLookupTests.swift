@@ -1,4 +1,5 @@
 import XCTest
+import Combine
 import UserDefaultsWrapper
 
 private typealias Default = FakeCoordinator.Default
@@ -6,10 +7,43 @@ private typealias Default = FakeCoordinator.Default
 final class KeyValueLookupTests: XCTestCase {
     private var sut: FakeCoordinator!
     private var keyValueStore: KeyValueStore!
+    private var subscriptions: Set<AnyCancellable> = []
     
     override func setUpWithError() throws {
         keyValueStore = InMemoryStore()
         sut = FakeCoordinator(store: keyValueStore)
+    }
+    
+    override func tearDownWithError() throws {
+        subscriptions = []
+    }
+    
+    func test_publisherForKeyPath() throws {
+        // Given
+        var newNumber: Int? = nil
+        
+        // When
+        try sut.publisher(for: \.intNum).sink { num in
+            newNumber = num
+        }
+        .store(in: &subscriptions)
+        
+        sut.intNum = 7
+        
+        // Then
+        XCTAssertEqual(newNumber, 7)
+    }
+    
+    func test_keyPathConvertedFromProtocolKeyPath() throws {
+        // Given
+        let protocolKeyPath = \FakeSettings.intNum
+        
+        // When
+        let concreteKeyPath = try sut.keyPathConverted(fromProtocolKeyPath: protocolKeyPath)
+        
+        // Then
+        XCTAssertEqual(sut[keyPath: concreteKeyPath], sut.intNum)
+        XCTAssertEqual(concreteKeyPath, \FakeCoordinator.intNum)
     }
     
     func test_keyForKeyPath() throws {

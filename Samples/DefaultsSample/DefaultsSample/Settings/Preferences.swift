@@ -35,6 +35,7 @@ final class Preferences: KeyValueStoreCoordinator, KeyValueLookup, Settings {
     #endif
 }
 
+@dynamicMemberLookup
 class PreferencesAccess: SettingsAccess {
     private let preferences: Preferences
     

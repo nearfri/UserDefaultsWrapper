@@ -9,6 +9,8 @@ extension KeyValueStoreCoordinator {
 }
 
 open class KeyValueStoreCoordinator: ObservableObject {
+    public typealias ObjectWillChangePublisher = ObservableObjectPublisher
+    
     let store: KeyValueStore
     
     private var storageKeyPathsByWrappedKeyPath: [AnyKeyPath: AnyKeyPath] = [:]

@@ -12,6 +12,7 @@ class InMemorySettings: Settings {
     var updatedDate: Date?
 }
 
+@dynamicMemberLookup
 class InMemorySettingsAccess: SettingsAccess {
     private let settings: InMemorySettings
     private let subject: PassthroughSubject<(AnyKeyPath, Any), Never> = .init()

@@ -2,6 +2,8 @@ import Foundation
 import CoreGraphics
 import UserDefaultsWrapper
 
+// MARK: - ColorType
+
 enum ColorType: String, Codable {
     case red
     case blue
@@ -11,6 +13,8 @@ enum ColorType: String, Codable {
     case yellow
 }
 
+// MARK: - Product
+
 struct Product: Codable, Equatable {
     var name: String
 }
@@ -18,6 +22,8 @@ struct Product: Codable, Equatable {
 extension Product {
     static let banana: Product = .init(name: "Banana")
 }
+
+// MARK: - FakeCoordinator
 
 extension FakeCoordinator {
     enum Default {
@@ -55,3 +61,11 @@ final class FakeCoordinator: KeyValueStoreCoordinator {
 }
 
 extension FakeCoordinator: KeyValueLookup {}
+
+// MARK: - FakeSettings
+
+protocol FakeSettings: AnyObject {
+    var intNum: Int { get set }
+}
+
+extension FakeCoordinator: FakeSettings {}

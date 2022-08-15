@@ -4,6 +4,8 @@ import UserDefaultsWrapperUtil
 
 @propertyWrapper
 public struct Stored<Value: Codable> {
+    public typealias Publisher = AnyPublisher<Value, Never>
+    
     let key: String
     private let defaultValue: Value
     
@@ -74,8 +76,6 @@ public struct Stored<Value: Codable> {
         return cache
     }
     
-    public typealias Publisher = AnyPublisher<Value, Never>
-    
     @available(*, unavailable, message: "@Stored can only be applied to KeyValueStoreCoordinator")
     public var projectedValue: Publisher {
         get { preconditionFailure() }
@@ -109,15 +109,16 @@ private extension Stored {
         @Published
         private(set) var value: Value
         
-        private var subscriptions: Set<AnyCancellable> = []
+        private var subscription: AnyCancellable?
         
         init(store: KeyValueStore, key: String, defaultValue: Value) {
             value = Cache.value(forKey: key, in: store) ?? defaultValue
             
-            store.objectDidChange.filter({ $0 == key }).sink { [unowned self, unowned store] _ in
-                value = Cache.value(forKey: key, in: store) ?? defaultValue
-            }
-            .store(in: &subscriptions)
+            subscription = store.objectDidChange
+                .filter({ $0 == key })
+                .sink { [unowned self, unowned store] _ in
+                    value = Cache.value(forKey: key, in: store) ?? defaultValue
+                }
         }
         
         private static func value(forKey key: String, in store: KeyValueStore) -> Value? {

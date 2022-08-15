@@ -1,5 +1,5 @@
 import XCTest
-import UserDefaultsWrapperPlus
+import UserDefaultsObjectCoder
 
 final class ObjectValueCoderTests: XCTestCase {
     private let sut: ObjectValueCoder = .init()

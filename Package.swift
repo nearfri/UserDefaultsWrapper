@@ -8,7 +8,7 @@ let package = Package(
     platforms: [.macOS(.v11), .iOS(.v13), .tvOS(.v13), .watchOS(.v6)],
     products: [
         .library(name: "UserDefaultsWrapper", targets: ["UserDefaultsWrapper"]),
-        .library(name: "UserDefaultsWrapperPlus", targets: ["UserDefaultsWrapperPlus"]),
+        .library(name: "UserDefaultsObjectCoder", targets: ["UserDefaultsObjectCoder"]),
     ],
     dependencies: [
         .package(url: "https://github.com/nearfri/ObjectCoder", from: "1.0.4"),
@@ -22,11 +22,11 @@ let package = Package(
             dependencies: ["UserDefaultsWrapper"]),
         
         .target(
-            name: "UserDefaultsWrapperPlus",
+            name: "UserDefaultsObjectCoder",
             dependencies: ["UserDefaultsWrapper", "UserDefaultsWrapperUtil", "ObjectCoder"]),
         .testTarget(
-            name: "UserDefaultsWrapperPlusTests",
-            dependencies: ["UserDefaultsWrapperPlus"]),
+            name: "UserDefaultsObjectCoderTests",
+            dependencies: ["UserDefaultsObjectCoder"]),
         
         .target(
             name: "UserDefaultsWrapperUtil",

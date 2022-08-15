@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 import UserDefaultsWrapper
-import UserDefaultsWrapperPlus
+import UserDefaultsObjectCoder
 
 final class Preferences: KeyValueStoreCoordinator, KeyValueLookup, Settings {
     @Stored("isBold")

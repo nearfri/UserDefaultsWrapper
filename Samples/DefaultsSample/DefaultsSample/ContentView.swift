@@ -23,11 +23,16 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            Text("Hello World")
+            Text(viewModel.greeting)
                 .ifTrue(isBold, then: { $0.bold() })
                 .ifTrue(isItalic, then: { $0.italic() })
                 .underline(isUnderline)
                 .strikethrough(isStrikethrough)
+            
+            TextField("Greeting", text: $viewModel.greeting)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: 200)
+                .textFieldStyle(.roundedBorder)
             
             textStyleControl
         }
@@ -78,6 +83,6 @@ private struct TextStyleData {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(viewModel: ContentViewModel())
+        ContentView(viewModel: ContentViewModel(settings: InMemorySettingsAccess()))
     }
 }

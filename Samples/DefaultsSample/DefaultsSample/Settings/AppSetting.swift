@@ -22,11 +22,10 @@ struct AppSetting<T: Codable>: DynamicProperty {
     }
     
     var projectedValue: Binding<T> {
-        Binding(get: {
-            settings[dynamicMember: keyPath]
-        }, set: { newValue in
-            settings[dynamicMember: keyPath] = newValue
-        })
+        Binding(
+            get: { settings[dynamicMember: keyPath] },
+            set: { settings[dynamicMember: keyPath] = $0 }
+        )
     }
     
     mutating func update() {
@@ -45,7 +44,7 @@ private extension AppSetting {
             
             self.settings = settings
             
-            subscription = settings.publisher(for: keyPath).sink { [weak self] _ in
+            subscription = settings.publisher(for: keyPath).dropFirst().sink { [weak self] _ in
                 self?.objectWillChange.send()
             }
         }

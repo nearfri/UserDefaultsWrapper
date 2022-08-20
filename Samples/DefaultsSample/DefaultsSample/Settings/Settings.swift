@@ -13,6 +13,8 @@ protocol Settings: AnyObject {
 
 @dynamicMemberLookup
 protocol SettingsAccess: AnyObject {
+    var objectWillChange: ObservableObjectPublisher { get }
+    
     subscript<T: Codable>(dynamicMember keyPath: KeyPath<Settings, T>) -> T { get }
     
     subscript<T: Codable>(

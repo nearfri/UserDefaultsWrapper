@@ -20,7 +20,7 @@ final class Preferences: KeyValueStoreCoordinator, KeyValueLookup, Settings {
     var age: Int = 30
     
     @Stored("greeting")
-    var greeting: String = "hello"
+    var greeting: String = "Hello"
     
     @Stored("updatedDate")
     var updatedDate: Date?
@@ -41,6 +41,10 @@ class PreferencesAccess: SettingsAccess {
     
     init(preferences: Preferences) {
         self.preferences = preferences
+    }
+    
+    var objectWillChange: ObservableObjectPublisher {
+        return preferences.objectWillChange
     }
     
     subscript<T: Codable>(dynamicMember keyPath: KeyPath<Settings, T>) -> T {

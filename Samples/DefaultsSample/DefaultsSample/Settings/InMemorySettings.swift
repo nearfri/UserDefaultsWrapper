@@ -7,7 +7,7 @@ class InMemorySettings: Settings {
     var isUnderline: Bool = false
     var isStrikethrough: Bool = false
     
-    var greeting: String = "hello"
+    var greeting: String = "Hello"
     
     var updatedDate: Date?
 }
@@ -16,6 +16,8 @@ class InMemorySettings: Settings {
 class InMemorySettingsAccess: SettingsAccess {
     private let settings: InMemorySettings
     private let subject: PassthroughSubject<(AnyKeyPath, Any), Never> = .init()
+    
+    var objectWillChange: ObservableObjectPublisher = .init()
     
     init(settings: InMemorySettings = .init()) {
         self.settings = settings
@@ -30,12 +32,17 @@ class InMemorySettingsAccess: SettingsAccess {
             return settings[keyPath: keyPath]
         }
         set {
+            objectWillChange.send()
             subject.send((keyPath, newValue))
             settings[keyPath: keyPath] = newValue
         }
     }
     
     func publisher<T: Codable>(for keyPath: KeyPath<Settings, T>) -> AnyPublisher<T, Never> {
-        return subject.filter({ $0.0 == keyPath }).map({ $0.1 as! T }).eraseToAnyPublisher()
+        return subject
+            .filter({ $0.0 == keyPath })
+            .map({ $0.1 as! T })
+            .prepend(settings[keyPath: keyPath])
+            .eraseToAnyPublisher()
     }
 }

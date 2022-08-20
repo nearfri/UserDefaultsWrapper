@@ -3,16 +3,20 @@ import SwiftUI
 import Combine
 
 class ContentViewModel: ObservableObject {
-//    @Published
-    @AppStorage("isItalic")
-    var isItalic: Bool = false
+    private let settings: SettingsAccess
     
     private var subscriptions: [AnyCancellable] = []
     
-    init() {
-        NSLog("init")
-        objectWillChange.sink { [unowned self] in
-            NSLog("will change \(isItalic)")
+    init(settings: SettingsAccess) {
+        self.settings = settings
+        
+        settings.objectWillChange.sink { [objectWillChange] in
+            objectWillChange.send()
         }.store(in: &subscriptions)
+    }
+    
+    var greeting: String {
+        get { settings.greeting }
+        set { settings.greeting = newValue }
     }
 }

@@ -45,13 +45,9 @@ extension KeyValueLookup where Self: KeyValueStoreCoordinator {
         }
     }
     
-    public func storedValue<T: Codable>(for keyPath: KeyPath<Self, T>) throws -> T? {
-        return try store.value(forKey: key(for: keyPath), ofType: T.self)
-    }
-    
     public func hasStoredValue<T: Codable>(for keyPath: KeyPath<Self, T>) -> Bool {
         do {
-            return try storedValue(for: keyPath) != nil
+            return store.hasValue(forKey: try key(for: keyPath))
         } catch {
             return false
         }

@@ -27,6 +27,10 @@ public class UserDefaultsStore: KeyValueStore, ObservableObject {
         defaults.set(encodedValue, forKey: key)
     }
     
+    public func hasValue(forKey key: String) -> Bool {
+        return defaults.object(forKey: key) != nil
+    }
+    
     public func removeValue(forKey key: String) {
         defaultsObserver.addObservation(forKey: key)
         

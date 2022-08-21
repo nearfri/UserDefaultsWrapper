@@ -50,12 +50,11 @@ final class KeyValueLookupTests: XCTestCase {
         XCTAssertEqual(try sut.key(for: \.intNum), "intNum")
     }
     
-    func test_storedValue_ofFirstLaunch_returnNil() throws {
-        XCTAssertNil(try sut.storedValue(for: \.intNum))
+    func test_hasStoredValue_ofFirstLaunch_returnFalse() throws {
         XCTAssertFalse(sut.hasStoredValue(for: \.intNum))
     }
     
-    func test_storedValue_ofNextLaunch_returnValue() throws {
+    func test_hasStoredValue_ofNextLaunch_returnTrue() throws {
         // Given
         sut.intNum = 7
         sut = nil
@@ -64,7 +63,6 @@ final class KeyValueLookupTests: XCTestCase {
         sut = FakeCoordinator(store: keyValueStore)
         
         // Then
-        XCTAssertEqual(try sut.storedValue(for: \.intNum), 7)
         XCTAssertTrue(sut.hasStoredValue(for: \.intNum))
     }
     

@@ -16,15 +16,15 @@ final class KeyValueStoreTests: XCTestCase {
     
     func testInMemoryStoreRountTrip() throws {
         sut = InMemoryStore()
-        try runTestRoundTrip()
+        runTestRoundTrip()
     }
     
     func testUserDefaultsStoreRoundTrip() throws {
         sut = UserDefaultsStore(defaults: .standard, valueCoder: JSONValueCoder())
-        try runTestRoundTrip()
+        runTestRoundTrip()
     }
     
-    func runTestRoundTrip() throws {
+    func runTestRoundTrip() {
         testRoundTrip(of: true)
         testRoundTrip(of: false)
         testRoundTrip(of: true as Bool?)
@@ -76,6 +76,36 @@ final class KeyValueStoreTests: XCTestCase {
         } catch {
             XCTFail("\(error) - \(type(of: sut!)), value type: \(T.self)",
                     file: file, line: line)
+        }
+    }
+    
+    func testInMemoryStoreValueExistence() throws {
+        sut = InMemoryStore()
+        runTestValueExistence()
+    }
+    
+    func testUserDefaultsStoreValueExistence() throws {
+        sut = UserDefaultsStore(defaults: .standard, valueCoder: JSONValueCoder())
+        runTestValueExistence()
+    }
+    
+    private func runTestValueExistence() {
+        let storeType = type(of: sut!)
+        
+        do {
+            let key = "anonymousKey"
+            
+            XCTAssertFalse(sut.hasValue(forKey: key), "\(storeType)")
+            
+            try sut.setValue("Some Value", forKey: key)
+            
+            XCTAssertTrue(sut.hasValue(forKey: key), "\(storeType)")
+            
+            sut.removeValue(forKey: key)
+            
+            XCTAssertFalse(sut.hasValue(forKey: key), "\(storeType)")
+        } catch {
+            XCTFail("\(error) - \(storeType)")
         }
     }
     

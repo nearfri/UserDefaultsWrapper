@@ -29,6 +29,10 @@ public class InMemoryStore: KeyValueStore {
         didChange.send(key)
     }
     
+    public func hasValue(forKey key: String) -> Bool {
+        return valuesByKey[key] != nil
+    }
+    
     public func removeValue(forKey key: String) {
         valuesByKey[key] = nil
         didChange.send(key)

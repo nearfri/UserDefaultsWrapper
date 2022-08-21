@@ -32,6 +32,10 @@ public class UbiquitousStore: KeyValueStore {
         didChange.send(key)
     }
     
+    public func hasValue(forKey key: String) -> Bool {
+        return store.object(forKey: key) != nil
+    }
+    
     public func removeValue(forKey key: String) {
         storeObserver.addObservation(forKey: key)
         

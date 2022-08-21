@@ -22,7 +22,7 @@ struct AppSetting<T: Codable>: DynamicProperty {
     }
     
     var projectedValue: Binding<T> {
-        Binding(
+        return Binding(
             get: { settings[dynamicMember: keyPath] },
             set: { settings[dynamicMember: keyPath] = $0 }
         )

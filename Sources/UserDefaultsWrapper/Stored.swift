@@ -90,8 +90,8 @@ public struct Stored<Value: Codable> {
 
 private extension Stored {
     @propertyWrapper
-    class Box {
-        var wrappedValue: Cache?
+    class Box<Wrapped> {
+        var wrappedValue: Wrapped?
     }
     
     class Cache {

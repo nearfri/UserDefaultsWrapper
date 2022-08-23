@@ -20,13 +20,13 @@ public class UbiquitousStore: KeyValueStore {
         storeObserver.addObservation(forKey: key)
         
         guard let encodedValue = store.object(forKey: key) else { return nil }
-        return try valueCoder.decode(type, from: encodedValue)
+        return try valueCoder.decode(type, from: encodedValue, forKey: key)
     }
     
     public func setValue<T: Codable>(_ value: T, forKey key: String) throws {
         storeObserver.addObservation(forKey: key)
         
-        let encodedValue = try valueCoder.encode(value)
+        let encodedValue = try valueCoder.encode(value, forKey: key)
         store.set(encodedValue, forKey: key)
         
         didChange.send(key)

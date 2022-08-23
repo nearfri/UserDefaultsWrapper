@@ -5,7 +5,10 @@ struct DefaultsSampleApp: App {
     @NSApplicationDelegateAdaptor
     private var appDelegate: AppDelegate
     
-    private let settings: SettingsAccess = PreferencesAccess(preferences: .standard)
+    private let settings: SettingsAccess = {
+        // Migrate data if needed
+        return PreferencesAccess(preferences: .standard)
+    }()
     
     var body: some Scene {
         WindowGroup {

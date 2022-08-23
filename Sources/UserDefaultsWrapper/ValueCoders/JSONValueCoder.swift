@@ -16,11 +16,15 @@ public class JSONValueCoder: ValueCoder {
         self.decoder = decoder
     }
     
-    public func encode<T: Encodable>(_ value: T) throws -> Any {
+    public func encode<T: Encodable>(_ value: T, forKey key: String) throws -> Any {
         return isPlistObject(value) ? value : try encoder.encode(value)
     }
     
-    public func decode<T: Decodable>(_ type: T.Type, from value: Any) throws -> T {
+    public func decode<T: Decodable>(
+        _ type: T.Type,
+        from value: Any,
+        forKey key: String
+    ) throws -> T {
         var encodedNilData: Data {
             try! self.encoder.encode(nil as Data?)
         }

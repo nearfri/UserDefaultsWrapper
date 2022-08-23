@@ -12,11 +12,15 @@ public class ObjectValueCoder: ValueCoder {
         self.decoder = decoder
     }
     
-    public func encode<T: Encodable>(_ value: T) throws -> Any {
+    public func encode<T: Encodable>(_ value: T, forKey key: String) throws -> Any {
         return isPlistObject(value) ? value : try encoder.encode(value)
     }
     
-    public func decode<T: Decodable>(_ type: T.Type, from value: Any) throws -> T {
+    public func decode<T: Decodable>(
+        _ type: T.Type,
+        from value: Any,
+        forKey key: String
+    ) throws -> T {
         switch value {
         case let value as T where type != String?.self:
             // ObjectEncoder가 nil은 String으로 저장하므로 Optional<String>은 제외해야 한다.

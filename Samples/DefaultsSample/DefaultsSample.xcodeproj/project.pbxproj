@@ -99,10 +99,10 @@
 			isa = PBXGroup;
 			children = (
 				0837B1D42896C60200756117 /* Settings.swift */,
-				0837B1D62897778100756117 /* InMemorySettings.swift */,
-				08E3F0C52879C56C002D98CD /* Preferences.swift */,
 				08E3F0C42879C56C002D98CD /* AppSetting.swift */,
 				0837B1D828979D2D00756117 /* Environment+Settings.swift */,
+				0837B1D62897778100756117 /* InMemorySettings.swift */,
+				08E3F0C52879C56C002D98CD /* Preferences.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";

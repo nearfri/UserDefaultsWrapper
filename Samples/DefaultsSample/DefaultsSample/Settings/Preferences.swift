@@ -3,6 +3,19 @@ import Combine
 import UserDefaultsWrapper
 import UserDefaultsObjectCoder
 
+private extension Stored {
+    init(wrappedValue: Value, _ key: String, shouldEncrypt: Bool) {
+        let prefix = Preferences.encryptionPrefix
+        let actualKey = shouldEncrypt ? prefix + key : key
+        self.init(wrappedValue: wrappedValue, actualKey)
+    }
+}
+
+extension Preferences {
+    static let symmetricKey: String = String(repeating: "A", count: 32)
+    static let encryptionPrefix: String = "encrypted_"
+}
+
 final class Preferences: KeyValueStoreCoordinator, KeyValueLookup, Settings {
     @Stored("isBold")
     var isBold: Bool = false
@@ -19,7 +32,7 @@ final class Preferences: KeyValueStoreCoordinator, KeyValueLookup, Settings {
     @Stored("age")
     var age: Int = 30
     
-    @Stored("greeting")
+    @Stored("greeting", shouldEncrypt: true)
     var greeting: String = "Hello"
     
     @Stored("updatedDate")
@@ -28,11 +41,12 @@ final class Preferences: KeyValueStoreCoordinator, KeyValueLookup, Settings {
     static let standard: Preferences = .init(
         store: UserDefaultsStore(
             defaults: .standard,
-            valueCoder: ObjectValueCoder()))
+            valueCoder: CryptoValueCoderDecorator(
+                valueCoder: ObjectValueCoder(),
+                symmetricKey: Preferences.symmetricKey,
+                shouldEncrypt: { $0.hasPrefix(Preferences.encryptionPrefix) })))
     
-    #if DEBUG
     static let inMemory: Preferences = .init(store: InMemoryStore())
-    #endif
 }
 
 @dynamicMemberLookup

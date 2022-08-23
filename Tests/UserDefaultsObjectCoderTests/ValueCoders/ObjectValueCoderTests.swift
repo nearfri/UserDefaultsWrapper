@@ -50,7 +50,7 @@ final class ObjectValueCoderTests: XCTestCase {
         
         let encodedValue: Any
         do {
-            encodedValue = try sut.encode(value)
+            encodedValue = try sut.encode(value, forKey: key)
         } catch {
             XCTFail("\(error) - while encoding \(T.self)", file: file, line: line)
             return
@@ -60,7 +60,7 @@ final class ObjectValueCoderTests: XCTestCase {
         let loadedObject = defaults.object(forKey: key)!
         
         do {
-            let decodedValue = try sut.decode(T.self, from: loadedObject)
+            let decodedValue = try sut.decode(T.self, from: loadedObject, forKey: key)
             XCTAssertEqual(decodedValue, value, "value type: \(T.self)",
                            file: file, line: line)
         } catch {

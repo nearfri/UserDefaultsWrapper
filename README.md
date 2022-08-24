@@ -27,6 +27,9 @@ final class Preferences: KeyValueStoreCoordinator {
     @Stored("str")
     var str: String = "hello"
     
+    @Stored("encrypted_secretText")
+    var secretText: String = "encrypted information"
+    
     @Stored("rect")
     var rect: CGRect = CGRect(x: 1, y: 2, width: 3, height: 4)
     
@@ -36,9 +39,15 @@ final class Preferences: KeyValueStoreCoordinator {
     @Stored("dataModificationDate")
     var dataModificationDate: Date?
     
-    static let standard: Preferences = {
-        return .init(store: UserDefaultsStore(defaults: .standard, valueCoder: JSONValueCoder()))
-    }()
+    static let standard: Preferences = .init(
+        store: UserDefaultsStore(
+            defaults: .standard,
+            valueCoder: CryptoValueCoderDecorator( // Encrypt using ChaChaPoly
+                valueCoder: JSONValueCoder(),
+                symmetricKey: KeyChain.someSymmetricKey,
+                shouldEncrypt: { $0.hasPrefix("encrypted_") })))
+    
+    static let inMemory: Preferences = .init(store: InMemoryStore())
 }
 
 // 3. Just use it.

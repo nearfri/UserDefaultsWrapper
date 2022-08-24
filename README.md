@@ -61,6 +61,8 @@ assert(UserDefaults.standard.object(forKey: "intNum") == nil)
 assert(preferences.intNum == 3) // Default value
 ```
 
+For more example usage, see the sample app in `Samples` folder.
+
 ## Install
 
 #### Swift Package Manager

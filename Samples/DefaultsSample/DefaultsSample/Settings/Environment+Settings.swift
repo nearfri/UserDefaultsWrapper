@@ -1,13 +1,13 @@
 import Foundation
 import SwiftUI
 
-private struct SettingsAccessKey: EnvironmentKey {
-    static let defaultValue: SettingsAccess = InMemorySettingsAccess()
+private struct SettingsKey: EnvironmentKey {
+    static let defaultValue: Settings = InMemorySettings()
 }
 
 extension EnvironmentValues {
-    var appSettings: SettingsAccess {
-        get { self[SettingsAccessKey.self] }
-        set { self[SettingsAccessKey.self] = newValue }
+    var appSettings: Settings {
+        get { self[SettingsKey.self] }
+        set { self[SettingsKey.self] = newValue }
     }
 }

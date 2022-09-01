@@ -1,48 +1,31 @@
 import Foundation
 import Combine
 
-class InMemorySettings: Settings {
-    var isBold: Bool = false
-    var isItalic: Bool = false
-    var isUnderline: Bool = false
-    var isStrikethrough: Bool = false
+class InMemorySettings: Settings, ObservableObject {
+    @Published var isBold: Bool = false
+    @Published var isItalic: Bool = false
+    @Published var isUnderline: Bool = false
+    @Published var isStrikethrough: Bool = false
     
-    var greeting: String = "Hello"
+    @Published var greeting: String = "Hello"
     
-    var updatedDate: Date?
-}
-
-@dynamicMemberLookup
-class InMemorySettingsAccess: SettingsAccess {
-    private let settings: InMemorySettings
-    private let subject: PassthroughSubject<(AnyKeyPath, Any), Never> = .init()
+    @Published var updatedDate: Date?
     
-    var objectWillChange: ObservableObjectPublisher = .init()
+    private typealias PublisherKeyPath<T> = KeyPath<InMemorySettings, Published<T>.Publisher>
     
-    init(settings: InMemorySettings = .init()) {
-        self.settings = settings
-    }
-    
-    subscript<T: Codable>(dynamicMember keyPath: KeyPath<Settings, T>) -> T {
-        return settings[keyPath: keyPath]
-    }
-    
-    subscript<T: Codable>(dynamicMember keyPath: ReferenceWritableKeyPath<Settings, T>) -> T {
-        get {
-            return settings[keyPath: keyPath]
-        }
-        set {
-            objectWillChange.send()
-            subject.send((keyPath, newValue))
-            settings[keyPath: keyPath] = newValue
-        }
-    }
+    private static let publisherKeyPaths: [AnyKeyPath: PartialKeyPath<InMemorySettings>] = [
+        \Settings.isBold: \.$isBold,
+        \Settings.isItalic: \.$isItalic,
+        \Settings.isUnderline: \.$isUnderline,
+        \Settings.isStrikethrough: \.$isStrikethrough,
+        \Settings.greeting: \.$greeting,
+        \Settings.updatedDate: \.$updatedDate,
+    ]
     
     func publisher<T: Codable>(for keyPath: KeyPath<Settings, T>) -> AnyPublisher<T, Never> {
-        return subject
-            .filter({ $0.0 == keyPath })
-            .map({ $0.1 as! T })
-            .prepend(settings[keyPath: keyPath])
-            .eraseToAnyPublisher()
+        guard let publisherKeyPath = Self.publisherKeyPaths[keyPath] as? PublisherKeyPath<T>
+        else { preconditionFailure("publisherKeyPath not found. \(keyPath)") }
+        
+        return self[keyPath: publisherKeyPath].eraseToAnyPublisher()
     }
 }

@@ -83,6 +83,6 @@ private struct TextStyleData {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(viewModel: ContentViewModel(settings: InMemorySettingsAccess()))
+        ContentView(viewModel: ContentViewModel(settings: InMemorySettings()))
     }
 }

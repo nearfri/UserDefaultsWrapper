@@ -5,9 +5,9 @@ struct DefaultsSampleApp: App {
     @NSApplicationDelegateAdaptor
     private var appDelegate: AppDelegate
     
-    private let settings: SettingsAccess = {
+    private let settings: Settings = {
         // Migrate data if needed
-        return PreferencesAccess(preferences: .standard)
+        return Preferences.standard
     }()
     
     var body: some Scene {

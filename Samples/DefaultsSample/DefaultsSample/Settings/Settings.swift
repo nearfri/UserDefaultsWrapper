@@ -9,17 +9,8 @@ protocol Settings: AnyObject {
     
     var greeting: String { get set }
     var updatedDate: Date? { get set }
-}
-
-@dynamicMemberLookup
-protocol SettingsAccess: AnyObject {
+    
     var objectWillChange: ObservableObjectPublisher { get }
-    
-    subscript<T: Codable>(dynamicMember keyPath: KeyPath<Settings, T>) -> T { get }
-    
-    subscript<T: Codable>(
-        dynamicMember keyPath: ReferenceWritableKeyPath<Settings, T>
-    ) -> T { get set }
     
     func publisher<T: Codable>(for keyPath: KeyPath<Settings, T>) -> AnyPublisher<T, Never>
 }

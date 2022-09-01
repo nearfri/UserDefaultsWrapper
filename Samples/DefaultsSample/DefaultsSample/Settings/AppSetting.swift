@@ -7,7 +7,7 @@ struct AppSetting<T: Codable>: DynamicProperty {
     private let keyPath: ReferenceWritableKeyPath<Settings, T>
     
     @Environment(\.appSettings)
-    private var settings: SettingsAccess
+    private var settings: Settings
     
     @StateObject
     private var observer: SettingsObserver = .init()
@@ -17,14 +17,14 @@ struct AppSetting<T: Codable>: DynamicProperty {
     }
     
     var wrappedValue: T {
-        get { settings[dynamicMember: keyPath] }
-        nonmutating set { settings[dynamicMember: keyPath] = newValue }
+        get { settings[keyPath: keyPath] }
+        nonmutating set { settings[keyPath: keyPath] = newValue }
     }
     
     var projectedValue: Binding<T> {
         return Binding(
-            get: { settings[dynamicMember: keyPath] },
-            set: { settings[dynamicMember: keyPath] = $0 }
+            get: { settings[keyPath: keyPath] },
+            set: { settings[keyPath: keyPath] = $0 }
         )
     }
     
@@ -35,11 +35,11 @@ struct AppSetting<T: Codable>: DynamicProperty {
 
 private extension AppSetting {
     class SettingsObserver: ObservableObject {
-        private var settings: SettingsAccess?
+        private var settings: Settings?
         
         private var subscription: AnyCancellable?
         
-        func observe(_ keyPath: KeyPath<Settings, T>, of settings: SettingsAccess) {
+        func observe(_ keyPath: KeyPath<Settings, T>, of settings: Settings) {
             if self.settings === settings { return }
             
             self.settings = settings

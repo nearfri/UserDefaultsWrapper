@@ -2,9 +2,9 @@ import SwiftUI
 
 @main
 struct DefaultsSampleApp: App {
-    private let settings: SettingsAccess = {
+    private let settings: Settings = {
         // Migrate data if needed
-        return PreferencesAccess(preferences: .standard)
+        return Preferences.standard
     }()
     
     var body: some Scene {

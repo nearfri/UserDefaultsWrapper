@@ -47,34 +47,12 @@ final class Preferences: KeyValueStoreCoordinator, KeyValueLookup, Settings {
                 shouldEncrypt: { $0.hasPrefix(Preferences.encryptionPrefix) })))
     
     static let inMemory: Preferences = .init(store: InMemoryStore())
-}
-
-@dynamicMemberLookup
-class PreferencesAccess: SettingsAccess {
-    private let preferences: Preferences
-    
-    init(preferences: Preferences) {
-        self.preferences = preferences
-    }
-    
-    var objectWillChange: ObservableObjectPublisher {
-        return preferences.objectWillChange
-    }
-    
-    subscript<T: Codable>(dynamicMember keyPath: KeyPath<Settings, T>) -> T {
-        return preferences[keyPath: keyPath]
-    }
-    
-    subscript<T: Codable>(dynamicMember keyPath: ReferenceWritableKeyPath<Settings, T>) -> T {
-        get { preferences[keyPath: keyPath] }
-        set { preferences[keyPath: keyPath] = newValue }
-    }
     
     func publisher<T: Codable>(for keyPath: KeyPath<Settings, T>) -> AnyPublisher<T, Never> {
         do {
-            let concreteKeyPath = try preferences.keyPathConverted(fromProtocolKeyPath: keyPath)
+            let concreteKeyPath = try keyPathConverted(fromProtocolKeyPath: keyPath)
             
-            return try preferences.publisher(for: concreteKeyPath).eraseToAnyPublisher()
+            return try publisher(for: concreteKeyPath).eraseToAnyPublisher()
         } catch {
             preconditionFailure("\(error)")
         }

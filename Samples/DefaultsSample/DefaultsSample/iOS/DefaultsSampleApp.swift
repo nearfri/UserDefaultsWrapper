@@ -2,15 +2,12 @@ import SwiftUI
 
 @main
 struct DefaultsSampleApp: App {
-    private let settings: Settings = {
-        // Migrate data if needed
-        return Preferences.standard
-    }()
+    private let settings: Preferences = .standard
     
     var body: some Scene {
         WindowGroup {
-            ContentView(viewModel: ContentViewModel(settings: settings))
-                .environment(\.appSettings, settings)
+            ContentView(viewModel: ContentViewModel(greetingStore: settings))
+                .environment(\.fontSettings, settings)
         }
     }
 }

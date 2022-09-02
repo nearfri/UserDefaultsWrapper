@@ -16,7 +16,7 @@ extension Preferences {
     static let encryptionPrefix: String = "encrypted_"
 }
 
-final class Preferences: KeyValueStoreCoordinator, KeyValueLookup, Settings {
+final class Preferences: KeyValueStoreCoordinator, KeyValueLookup {
     @Stored("isBold")
     var isBold: Bool = false
     
@@ -38,17 +38,27 @@ final class Preferences: KeyValueStoreCoordinator, KeyValueLookup, Settings {
     @Stored("updatedDate")
     var updatedDate: Date?
     
-    static let standard: Preferences = .init(
-        store: UserDefaultsStore(
-            defaults: .standard,
-            valueCoder: CryptoValueCoderDecorator(
-                valueCoder: ObjectValueCoder(),
-                symmetricKey: Preferences.symmetricKey,
-                shouldEncrypt: { $0.hasPrefix(Preferences.encryptionPrefix) })))
-    
     static let inMemory: Preferences = .init(store: InMemoryStore())
     
-    func publisher<T: Codable>(for keyPath: KeyPath<Settings, T>) -> AnyPublisher<T, Never> {
+    static let standard: Preferences = {
+        Preferences.migrateStore()
+        
+        return Preferences(
+            store: UserDefaultsStore(
+                defaults: .standard,
+                valueCoder: CryptoValueCoderDecorator(
+                    valueCoder: ObjectValueCoder(),
+                    symmetricKey: Preferences.symmetricKey,
+                    shouldEncrypt: { $0.hasPrefix(Preferences.encryptionPrefix) })))
+    }()
+    
+    private static func migrateStore() {
+        // Migrate data if needed
+    }
+    
+    private func publisher<P, T: Codable>(
+        forProtocolKeyPath keyPath: KeyPath<P, T>
+    ) -> AnyPublisher<T, Never> {
         do {
             let concreteKeyPath = try keyPathConverted(fromProtocolKeyPath: keyPath)
             
@@ -56,5 +66,17 @@ final class Preferences: KeyValueStoreCoordinator, KeyValueLookup, Settings {
         } catch {
             preconditionFailure("\(error)")
         }
+    }
+}
+
+extension Preferences: FontSettings {
+    func publisher<T: Codable>(for keyPath: KeyPath<FontSettings, T>) -> AnyPublisher<T, Never> {
+        return publisher(forProtocolKeyPath: keyPath)
+    }
+}
+
+extension Preferences: GreetingStore {
+    func publisher<T: Codable>(for keyPath: KeyPath<GreetingStore, T>) -> AnyPublisher<T, Never> {
+        return publisher(forProtocolKeyPath: keyPath)
     }
 }

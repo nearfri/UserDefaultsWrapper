@@ -10,10 +10,10 @@ struct ContentView: View {
     @AppStorage("isItalic")
     private var isItalic: Bool = false
     
-    @AppSetting(\.isUnderline)
+    @FontSetting(\.isUnderline)
     private var isUnderline: Bool
     
-    @AppSetting(\.isStrikethrough)
+    @FontSetting(\.isStrikethrough)
     private var isStrikethrough: Bool
     
 #if os(iOS)
@@ -28,6 +28,11 @@ struct ContentView: View {
                 .ifTrue(isItalic, then: { $0.italic() })
                 .underline(isUnderline)
                 .strikethrough(isStrikethrough)
+            
+            Text(viewModel.updatedDate)
+            
+            Divider().frame(width: 250)
+                .padding([.top, .bottom], 10)
             
             TextField("Greeting", text: $viewModel.greeting)
                 .multilineTextAlignment(.center)
@@ -83,6 +88,6 @@ private struct TextStyleData {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(viewModel: ContentViewModel(settings: InMemorySettings()))
+        ContentView(viewModel: ContentViewModel(greetingStore: InMemorySettings()))
     }
 }

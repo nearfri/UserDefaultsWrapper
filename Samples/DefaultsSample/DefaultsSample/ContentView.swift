@@ -16,11 +16,6 @@ struct ContentView: View {
     @FontSetting(\.isStrikethrough)
     private var isStrikethrough: Bool
     
-#if os(iOS)
-    @Environment(\.horizontalSizeClass)
-    private var horizontalSizeClass: UserInterfaceSizeClass?
-#endif
-    
     var body: some View {
         VStack {
             Text(viewModel.greeting)

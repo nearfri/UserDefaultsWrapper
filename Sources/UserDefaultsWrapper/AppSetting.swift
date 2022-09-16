@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 import Combine
 
-protocol SettingsBridge {
+public protocol SettingsBridge {
     associatedtype Settings
     // associatedtype Settings: AnyObject // Compile Error
     
@@ -15,7 +15,7 @@ protocol SettingsBridge {
 }
 
 @propertyWrapper
-struct AppSetting<Bridge: SettingsBridge, T: Codable>: DynamicProperty {
+public struct AppSetting<Bridge: SettingsBridge, T: Codable>: DynamicProperty {
     private let keyPath: ReferenceWritableKeyPath<Bridge.Settings, T>
     
     @Environment(Bridge.environmentKeyPath)
@@ -24,28 +24,28 @@ struct AppSetting<Bridge: SettingsBridge, T: Codable>: DynamicProperty {
     @StateObject
     private var observer: SettingsObserver = .init()
     
-    init(_ keyPath: ReferenceWritableKeyPath<Bridge.Settings, T>) {
+    public init(_ keyPath: ReferenceWritableKeyPath<Bridge.Settings, T>) {
         self.keyPath = keyPath
     }
     
-    var wrappedValue: T {
+    public var wrappedValue: T {
         get { settings[keyPath: keyPath] }
         nonmutating set { settings[keyPath: keyPath] = newValue }
     }
     
-    var projectedValue: Binding<T> {
+    public var projectedValue: Binding<T> {
         return Binding(
             get: { settings[keyPath: keyPath] },
             set: { settings[keyPath: keyPath] = $0 }
         )
     }
     
-    mutating func update() {
+    public mutating func update() {
         observer.observe(keyPath, of: settings)
     }
 }
 
-private extension AppSetting {
+extension AppSetting {
     class SettingsObserver: ObservableObject {
         private var settings: Bridge.Settings?
         

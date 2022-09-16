@@ -1,5 +1,6 @@
 import Foundation
 import CoreGraphics
+import Combine
 import UserDefaultsWrapper
 
 // MARK: - ColorType
@@ -66,6 +67,18 @@ extension FakeCoordinator: KeyValueLookup {}
 
 protocol FakeSettings: AnyObject {
     var intNum: Int { get set }
+    
+    func publisher<T: Codable>(for keyPath: KeyPath<FakeSettings, T>) -> AnyPublisher<T, Never>
 }
 
-extension FakeCoordinator: FakeSettings {}
+extension FakeCoordinator: FakeSettings {
+    func publisher<T: Codable>(for keyPath: KeyPath<FakeSettings, T>) -> AnyPublisher<T, Never> {
+        do {
+            let concreteKeyPath = try keyPathConverted(fromProtocolKeyPath: keyPath)
+            
+            return try publisher(for: concreteKeyPath).eraseToAnyPublisher()
+        } catch {
+            preconditionFailure("\(error)")
+        }
+    }
+}

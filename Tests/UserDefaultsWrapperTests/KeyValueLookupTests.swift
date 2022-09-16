@@ -23,7 +23,7 @@ final class KeyValueLookupTests: XCTestCase {
         var newNumber: Int? = nil
         
         // When
-        try sut.publisher(for: \.intNum).sink { num in
+        try sut.publisher(for: \FakeCoordinator.intNum).sink { num in
             newNumber = num
         }
         .store(in: &subscriptions)

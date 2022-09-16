@@ -10,7 +10,6 @@
 		0815D0C028AA2F4400045F6C /* UserDefaultsObjectCoder in Frameworks */ = {isa = PBXBuildFile; productRef = 0815D0BF28AA2F4400045F6C /* UserDefaultsObjectCoder */; };
 		0837B1D52896C60200756117 /* FontSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0837B1D42896C60200756117 /* FontSettings.swift */; };
 		0837B1D72897778100756117 /* InMemorySettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0837B1D62897778100756117 /* InMemorySettings.swift */; };
-		0837B1D928979D2D00756117 /* Environment+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0837B1D828979D2D00756117 /* Environment+Settings.swift */; };
 		08A58F8528C1A1AD00A0BB3A /* FontSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A58F8428C1A1AD00A0BB3A /* FontSetting.swift */; };
 		08A58F8A28C1A87F00A0BB3A /* GreetingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A58F8928C1A87F00A0BB3A /* GreetingStore.swift */; };
 		08B1F7DF287BE03C00683647 /* View+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B1F7DE287BE03C00683647 /* View+.swift */; };
@@ -21,7 +20,6 @@
 		08E3F0972879C32D002D98CD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 08E3F0962879C32D002D98CD /* Preview Assets.xcassets */; };
 		08E3F0A12879C32D002D98CD /* DefaultsSampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E3F0A02879C32D002D98CD /* DefaultsSampleTests.swift */; };
 		08E3F0BA2879C40E002D98CD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E3F0B92879C40E002D98CD /* AppDelegate.swift */; platformFilters = (macos, ); };
-		08E3F0C62879C56C002D98CD /* AppSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E3F0C42879C56C002D98CD /* AppSetting.swift */; };
 		08E3F0C72879C56C002D98CD /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E3F0C52879C56C002D98CD /* Preferences.swift */; };
 		08E3F0CC2879C67D002D98CD /* UserDefaultsWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 08E3F0CB2879C67D002D98CD /* UserDefaultsWrapper */; };
 		08E3F0D12879C734002D98CD /* DefaultsSampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E3F0D02879C734002D98CD /* DefaultsSampleApp.swift */; platformFilters = (macos, ); };
@@ -40,7 +38,6 @@
 /* Begin PBXFileReference section */
 		0837B1D42896C60200756117 /* FontSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontSettings.swift; sourceTree = "<group>"; };
 		0837B1D62897778100756117 /* InMemorySettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InMemorySettings.swift; sourceTree = "<group>"; };
-		0837B1D828979D2D00756117 /* Environment+Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Environment+Settings.swift"; sourceTree = "<group>"; };
 		08A58F8428C1A1AD00A0BB3A /* FontSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontSetting.swift; sourceTree = "<group>"; };
 		08A58F8928C1A87F00A0BB3A /* GreetingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreetingStore.swift; sourceTree = "<group>"; };
 		08B1F7DE287BE03C00683647 /* View+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "View+.swift"; sourceTree = "<group>"; };
@@ -54,7 +51,6 @@
 		08E3F09C2879C32D002D98CD /* DefaultsSampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DefaultsSampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		08E3F0A02879C32D002D98CD /* DefaultsSampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsSampleTests.swift; sourceTree = "<group>"; };
 		08E3F0B92879C40E002D98CD /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		08E3F0C42879C56C002D98CD /* AppSetting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSetting.swift; sourceTree = "<group>"; };
 		08E3F0C52879C56C002D98CD /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		08E3F0C92879C66D002D98CD /* UserDefaultsWrapper */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = UserDefaultsWrapper; path = ../..; sourceTree = "<group>"; };
 		08E3F0D02879C734002D98CD /* DefaultsSampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsSampleApp.swift; sourceTree = "<group>"; };
@@ -95,9 +91,7 @@
 		08A58F8628C1A1EB00A0BB3A /* SwiftUIHelper */ = {
 			isa = PBXGroup;
 			children = (
-				08E3F0C42879C56C002D98CD /* AppSetting.swift */,
 				08A58F8428C1A1AD00A0BB3A /* FontSetting.swift */,
-				0837B1D828979D2D00756117 /* Environment+Settings.swift */,
 			);
 			path = SwiftUIHelper;
 			sourceTree = "<group>";
@@ -300,8 +294,6 @@
 				08E3F0C72879C56C002D98CD /* Preferences.swift in Sources */,
 				0837B1D52896C60200756117 /* FontSettings.swift in Sources */,
 				08A58F8528C1A1AD00A0BB3A /* FontSetting.swift in Sources */,
-				0837B1D928979D2D00756117 /* Environment+Settings.swift in Sources */,
-				08E3F0C62879C56C002D98CD /* AppSetting.swift in Sources */,
 				08E3F08F2879C32C002D98CD /* DefaultsSampleApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -461,7 +453,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 12.4;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.ukjeong.DefaultsSample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -498,7 +490,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 12.4;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.ukjeong.DefaultsSample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -520,7 +512,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				MACOSX_DEPLOYMENT_TARGET = 12.4;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.ukjeong.DefaultsSampleTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -543,7 +535,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				MACOSX_DEPLOYMENT_TARGET = 12.4;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.ukjeong.DefaultsSampleTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";

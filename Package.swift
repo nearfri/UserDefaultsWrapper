@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "UserDefaultsWrapper",
-    platforms: [.macOS(.v11), .iOS(.v13), .tvOS(.v13), .watchOS(.v6)],
+    platforms: [.macOS(.v11), .iOS(.v14), .tvOS(.v14), .watchOS(.v7)],
     products: [
         .library(name: "UserDefaultsWrapper", targets: ["UserDefaultsWrapper"]),
         .library(name: "UserDefaultsObjectCoder", targets: ["UserDefaultsObjectCoder"]),

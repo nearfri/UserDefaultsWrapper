@@ -45,7 +45,7 @@ final class Preferences: KeyValueStoreCoordinator {
             valueCoder: CryptoValueCoderDecorator( // Encrypt using ChaChaPoly
                 valueCoder: JSONValueCoder(),
                 symmetricKey: KeyChain.someSymmetricKey,
-                shouldEncrypt: { $0.hasPrefix("encrypted_") })))
+                encryptWhere: { $0.hasPrefix("encrypted_") })))
     
     static let inMemory: Preferences = .init(store: InMemoryStore())
 }

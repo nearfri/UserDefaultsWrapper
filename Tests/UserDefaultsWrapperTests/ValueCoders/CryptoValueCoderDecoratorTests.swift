@@ -18,7 +18,7 @@ final class CryptoValueCoderDecoratorTests: XCTestCase {
         sut = CryptoValueCoderDecorator(
             valueCoder: PassthroughValueCoder(),
             symmetricKey: String(repeating: "A", count: 32),
-            shouldEncrypt: { $0.hasPrefix("enc_") })
+            encryptWhere: { $0.hasPrefix("enc_") })
     }
     
     func test_roundTrip_whenEncrypt() throws {

@@ -49,7 +49,7 @@ final class Preferences: KeyValueStoreCoordinator, KeyValueLookup {
                 valueCoder: CryptoValueCoderDecorator(
                     valueCoder: ObjectValueCoder(),
                     symmetricKey: Preferences.symmetricKey,
-                    shouldEncrypt: { $0.hasPrefix(Preferences.encryptionPrefix) })))
+                    encryptWhere: { $0.hasPrefix(Preferences.encryptionPrefix) })))
     }()
     
     private static func migrateStore() {

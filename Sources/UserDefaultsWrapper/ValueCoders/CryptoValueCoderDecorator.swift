@@ -7,17 +7,17 @@ public class CryptoValueCoderDecorator: ValueCoder {
     private let valueCoder: ValueCoder
     private let cryptor: Cryptor
     private let dataTransformer: DataTransformer
-    private let encryptionFilter: (Key) -> Bool
+    private let encryptionPredicate: (Key) -> Bool
     
     public init(
         valueCoder: ValueCoder,
         symmetricKey: String, // SymmetricKeySize.bits256
-        shouldEncrypt encryptionFilter: @escaping (Key) -> Bool
+        encryptWhere predicate: @escaping (Key) -> Bool
     ) {
         self.valueCoder = valueCoder
         self.cryptor = Cryptor(symmetricKey: symmetricKey)
         self.dataTransformer = DataTransformer()
-        self.encryptionFilter = encryptionFilter
+        self.encryptionPredicate = predicate
     }
     
     public func encode<T: Encodable>(_ value: T, forKey key: String) throws -> Any {
@@ -43,7 +43,7 @@ public class CryptoValueCoderDecorator: ValueCoder {
     }
     
     private func shouldEncryptValue(forKey key: String) -> Bool {
-        return encryptionFilter(key)
+        return encryptionPredicate(key)
     }
     
     private func encrypt<T: Encodable>(_ value: T) throws -> Data {
